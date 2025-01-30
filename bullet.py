@@ -19,4 +19,8 @@ class Bullet(Sprite):
         self.y = float(self.rect.y)
         
     def update(self):
-        """Move the bullet"""
+        """Move the bullet up the screen."""
+        # update the exact position of the bullet
+        self.y -= self.settings.bullet_speed
+        # update the rect position
+        self.rect.y = self.y
