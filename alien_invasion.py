@@ -82,14 +82,15 @@ class AlienInvasion:
             
     def _check_keyup_events(self, event):
         """Respond to keyup events"""
-        if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = False
-        elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = False
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = False
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = False
+        match event.key:
+            case pygame.K_RIGHT:
+                self.ship.moving_right = False
+            case pygame.K_LEFT:
+                self.ship.moving_left = False
+            case pygame.K_UP:
+                self.ship.moving_up = False
+            case pygame.K_DOWN:
+                self.ship.moving_down = False
     
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullet group"""
