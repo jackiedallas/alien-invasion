@@ -50,12 +50,14 @@ class AlienInvasion:
     def _check_events(self):
         """Respond to keypress and mouse events."""
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                self._check_keydown_events(event)
-            elif event.type == pygame.KEYUP:
-                self._check_keyup_events(event)
+
+            match event.type:
+                case pygame.QUIT:
+                    sys.exit()
+                case pygame.KEYDOWN:
+                    self._check_keydown_events(event)
+                case pygame.KEYUP:
+                    self._check_keyup_events(event)
 
     def _update_bullets(self):
         """Update the position of bullets and get rid of old bullets."""
