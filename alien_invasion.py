@@ -41,14 +41,7 @@ class AlienInvasion:
             self.ship.update()
 
             # update bullets
-            self.bullets.update()
-
-            # Get rid of bullets that have disappeared
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
-            # this print statement will show the remaining bullets on screen
-            # print(len(self.bullets))
+            self._update_bullets()
 
             self.clock.tick(60)
 
@@ -61,6 +54,16 @@ class AlienInvasion:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+
+    def _update_bullets(self):
+        """Update the position of bullets and get rid of old bullets."""
+        # Update the bullet positions
+        self.bullets.update()
+
+        # get rid of the bullets that have disappeared
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
 
     def _update_screen(self):
         """Update images on the screen, and flip to new screen."""
