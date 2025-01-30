@@ -90,9 +90,8 @@ class AlienInvasion:
                 self.ship.moving_down = True
             case pygame.K_SPACE:
                 self._fire_bullet()
-
-        if event.key == pygame.K_q:
-            sys.exit()
+            case pygame.K_q:
+                sys.exit()
 
     def _check_keyup_events(self, event):
         """Respond to keyup events"""
