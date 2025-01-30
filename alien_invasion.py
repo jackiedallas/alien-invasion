@@ -3,6 +3,7 @@ import pygame  # type: ignore
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 
 
 class AlienInvasion:
@@ -28,6 +29,18 @@ class AlienInvasion:
         # initialize bullets
         self.bullets = pygame.sprite.Group()
         self.screen_rect = self.screen.get_rect()
+
+        # initialize aliens
+        self.aliens = pygame.sprite.Group()
+        self._create_fleet()
+
+    def _create_fleet(self):
+        """Create a fleet of aliens."""
+        # make an alien
+        alien = Alien(self)
+
+        # add the alien to the sprite group
+        self.aliens.add(alien)
 
     def run_game(self):
         """Start main loop for game."""
@@ -77,6 +90,7 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.ship.blitme()
+        self.aliens.draw(self.screen)
         pygame.display.flip()
 
     def _check_keydown_events(self, event):
