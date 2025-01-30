@@ -16,14 +16,12 @@ class Ship:
 
         # start each new ship at the bottom of the screen
         self.rect.midbottom = self.screen_rect.midbottom
-        
-        
+        # self.rect.midleft = self.screen_rect.midleft
+
         # store a float for the ships exact horizontal/vertical position
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
-        
-        
-        
+
         # movement flag; start with a ship that isn't moving
         self.moving_right = False
         self.moving_left = False
@@ -32,7 +30,7 @@ class Ship:
 
     def update(self):
         """Update the ship's position based on the movement flag."""
-        
+
         # update ship's x value to not go off screen
         # setting the ship speed based on the settings file
         # update ship position based on speed settings
@@ -44,11 +42,11 @@ class Ship:
             self.y -= self.settings.ship_speed
         if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
             self.y += self.settings.ship_speed
-        
-        # update rect object from self.x    
+
+        # update rect object from self.x
         self.rect.x = self.x
         self.rect.y = self.y
-            
+
     def blitme(self):
         """Draw the ship at its current location."""
         self.screen.blit(self.image, self.rect)

@@ -27,6 +27,7 @@ class AlienInvasion:
 
         # initialize bullets
         self.bullets = pygame.sprite.Group()
+        self.screen_rect = self.screen.get_rect()
 
     def run_game(self):
         """Start main loop for game."""
@@ -43,6 +44,7 @@ class AlienInvasion:
             # update bullets
             self._update_bullets()
 
+            # update screen 60 times per second
             self.clock.tick(60)
 
     def _check_events(self):
@@ -64,6 +66,8 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+            # if bullet.rect.left >= self.screen_rect.right:
+            #     self.bullets.remove(bullet)
 
     def _update_screen(self):
         """Update images on the screen, and flip to new screen."""
