@@ -24,8 +24,8 @@ class AlienInvasion:
 
         pygame.display.set_caption("Alien Invasion")
         self.ship = Ship(self)
-        
-        # intialize bullets
+
+        # initialize bullets
         self.bullets = pygame.sprite.Group()
 
     def run_game(self):
@@ -36,17 +36,24 @@ class AlienInvasion:
 
             # redraw the screen during each pass through the loop
             self._update_screen()
-            
+
             # update ships position
             self.ship.update()
-            
+
             # update bullets
             self.bullets.update()
-            
+
+            # Get rid of bullets that have disappeared
+            for bullet in self.bullets.copy():
+                if bullet.rect.bottom <= 0:
+                    self.bullets.remove(bullet)
+            # this print statement will show the remaining bullets on screen
+            # print(len(self.bullets))
+
             self.clock.tick(60)
 
     def _check_events(self):
-        """Respond to keypresses and mouse events."""
+        """Respond to keypress and mouse events."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -62,9 +69,9 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         pygame.display.flip()
-    
+
     def _check_keydown_events(self, event):
-        """Respond to keypresses."""
+        """Respond to keypress."""
         match event.key:
             case pygame.K_RIGHT:
                 self.ship.moving_right = True
@@ -76,10 +83,10 @@ class AlienInvasion:
                 self.ship.moving_down = True
             case pygame.K_SPACE:
                 self._fire_bullet()
-        
+
         if event.key == pygame.K_q:
             sys.exit()
-            
+
     def _check_keyup_events(self, event):
         """Respond to keyup events"""
         match event.key:
@@ -91,11 +98,12 @@ class AlienInvasion:
                 self.ship.moving_up = False
             case pygame.K_DOWN:
                 self.ship.moving_down = False
-    
+
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullet group"""
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
+
 
 if __name__ == '__main__':
     # make a game instance and run the game
