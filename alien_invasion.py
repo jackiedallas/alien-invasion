@@ -1,10 +1,12 @@
 import sys
+from time import sleep
 import pygame  # type: ignore
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from star import Star
+from game_stats import GameStats
 
 
 class AlienInvasion:
@@ -38,6 +40,25 @@ class AlienInvasion:
         # initialize stars
         self.stars = pygame.sprite.Group()
         self._create_star()
+
+        # initialize game stats
+        self.stats = GameStats(self)
+
+    def _ship_hit(self):
+        """Respond to the ship being hit by an alien."""
+        # decrement ships_left.
+        self.stats.ships_left -= 1
+
+        # get rid of any remaining bullets and aliens
+        self.bullets.empty()
+        self.aliens.empty()
+
+        # create new fleet and center ship
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # pause
+        sleep(0.5)
 
     def _create_star(self):
         """Create a background of stars."""
@@ -143,10 +164,10 @@ class AlienInvasion:
                 self.ship.moving_right = True
             case pygame.K_LEFT:
                 self.ship.moving_left = True
-            case pygame.K_UP:
-                self.ship.moving_up = True
-            case pygame.K_DOWN:
-                self.ship.moving_down = True
+            # case pygame.K_UP:
+            #     self.ship.moving_up = True
+            # case pygame.K_DOWN:
+            #     self.ship.moving_down = True
             case pygame.K_SPACE:
                 self._fire_bullet()
             case pygame.K_q:
@@ -159,10 +180,10 @@ class AlienInvasion:
                 self.ship.moving_right = False
             case pygame.K_LEFT:
                 self.ship.moving_left = False
-            case pygame.K_UP:
-                self.ship.moving_up = False
-            case pygame.K_DOWN:
-                self.ship.moving_down = False
+            # case pygame.K_UP:
+            #     self.ship.moving_up = False
+            # case pygame.K_DOWN:
+            #     self.ship.moving_down = False
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullet group"""
@@ -174,6 +195,10 @@ class AlienInvasion:
         """check if the fleet is at an edge, then update positions."""
         self._check_fleet_edges()
         self.aliens.update()
+
+        # look for alien-ship collisions
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self._ship_hit()
 
     def run_game(self):
         """Start main loop for game."""
