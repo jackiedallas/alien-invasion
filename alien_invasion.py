@@ -112,9 +112,15 @@ class AlienInvasion:
         # check for any bullets that have hit aliens.
         # if so, get rid of the bullet and the alien
         collisions = pygame.sprite.groupcollide(
-            self.bullets, self.aliens, True, True
-        )  # type ignore
-        
+            self.bullets, self.aliens, False, True
+        )
+        _ = collisions
+
+        if not self.aliens:
+            # destroy existing bullets and create new fleet
+            self.bullets.empty()
+            self._create_fleet()
+
     def _update_screen(self):
         """Update images on the screen, and flip to new screen."""
         self.screen.fill(self.settings.bg_color)
