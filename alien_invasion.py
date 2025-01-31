@@ -72,23 +72,18 @@ class AlienInvasion:
         new_alien.rect.y = y_position
         self.aliens.add(new_alien)
 
-    def run_game(self):
-        """Start main loop for game."""
-        while True:
-            # Watch for keyboard and mouse events
-            self._check_events()
+    def _check_fleet_edges(self):
+        """Respond correctly if any aliens have reached an edge"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
 
-            # redraw the screen during each pass through the loop
-            self._update_screen()
-
-            # update ships position
-            self.ship.update()
-
-            # update bullets
-            self._update_bullets()
-
-            # update screen 60 times per second
-            self.clock.tick(60)
+    def _change_fleet_direction(self):
+        """Drop the entire fleet and chagne the fleet's direction."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _check_events(self):
         """Respond to keypress and mouse events."""
@@ -158,6 +153,32 @@ class AlienInvasion:
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+
+    def _update_aliens(self):
+        """check if the fleet is at an edge, then update positions."""
+        self._check_fleet_edges()
+        self.aliens.update()
+
+    def run_game(self):
+        """Start main loop for game."""
+        while True:
+            # Watch for keyboard and mouse events
+            self._check_events()
+
+            # redraw the screen during each pass through the loop
+            self._update_screen()
+
+            # update ships position
+            self.ship.update()
+
+            # update bullets
+            self._update_bullets()
+
+            # update alien position
+            self._update_aliens()
+
+            # update screen 60 times per second
+            self.clock.tick(60)
 
 
 if __name__ == '__main__':

@@ -23,3 +23,8 @@ class Settings:
         # star settings
         self.star_color = (245, 245, 250)  # soft white
         self.star_radius = 1
+
+        # alien settings
+        self.alien_speed = 1.0
+        self.fleet_drop_speed = 10
+        self.fleet_direction = 1
