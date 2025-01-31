@@ -44,8 +44,8 @@ class AlienInvasion:
         # initialize game stats
         self.stats = GameStats(self)
 
-        # start alien invasion in an active state
-        self.game_active = True
+        # start alien invasion in an inactive state
+        self.game_active = False
 
     def _check_aliens_bottom(self):
         """Check if any aliens reached the bottom of the screen."""
