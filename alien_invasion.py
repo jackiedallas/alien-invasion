@@ -111,11 +111,6 @@ class AlienInvasion:
 
         self._check_bullet_alien_collisions()
 
-        if not self.aliens:
-            # destroy existing bullets and create new fleet
-            self.bullets.empty()
-            self._create_fleet()
-
     def _check_bullet_alien_collisions(self):
         """Respond to bullet-alien collisions."""
         # check for any bullets that have hit aliens.
@@ -124,6 +119,11 @@ class AlienInvasion:
             self.bullets, self.aliens, True, True
         )
         _ = collisions
+
+        if not self.aliens:
+            # destroy existing bullets and create new fleet
+            self.bullets.empty()
+            self._create_fleet()
 
     def _update_screen(self):
         """Update images on the screen, and flip to new screen."""
