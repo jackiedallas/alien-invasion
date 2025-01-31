@@ -26,6 +26,6 @@ class Settings:
         self.star_radius = 1
 
         # alien settings
-        self.alien_speed = 2.0
+        self.alien_speed = 10.0
         self.fleet_drop_speed = 15
         self.fleet_direction = 1

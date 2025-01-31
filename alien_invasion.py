@@ -44,21 +44,36 @@ class AlienInvasion:
         # initialize game stats
         self.stats = GameStats(self)
 
+        # start alien invasion in an active state
+        self.game_active = True
+
+    def _check_aliens_bottom(self):
+        """Check if any aliens reached the bottom of the screen."""
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                # Treat this the same as if the ship got hit.
+                self._ship_hit()
+                break
+
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
-        # decrement ships_left.
-        self.stats.ships_left -= 1
+        if self.stats.ships_left > 0:
+            # decrement ships_left.
+            self.stats.ships_left -= 1
 
-        # get rid of any remaining bullets and aliens
-        self.bullets.empty()
-        self.aliens.empty()
+            # get rid of any remaining bullets and aliens
+            self.bullets.empty()
+            self.aliens.empty()
 
-        # create new fleet and center ship
-        self._create_fleet()
-        self.ship.center_ship()
+            # create new fleet and center ship
+            self._create_fleet()
+            self.ship.center_ship()
 
-        # pause
-        sleep(0.5)
+            # pause
+            sleep(0.5)
+        else:
+            self.game_active = False
+            sys.exit()
 
     def _create_star(self):
         """Create a background of stars."""
@@ -200,23 +215,27 @@ class AlienInvasion:
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
 
+        # look for aliens hitting the bottom of the screen
+        self._check_aliens_bottom()
+
     def run_game(self):
         """Start main loop for game."""
         while True:
             # Watch for keyboard and mouse events
             self._check_events()
 
+            if self.game_active:
+                # update ships position
+                self.ship.update()
+
+                # update bullets
+                self._update_bullets()
+
+                # update alien position
+                self._update_aliens()
+
             # redraw the screen during each pass through the loop
             self._update_screen()
-
-            # update ships position
-            self.ship.update()
-
-            # update bullets
-            self._update_bullets()
-
-            # update alien position
-            self._update_aliens()
 
             # update screen 60 times per second
             self.clock.tick(60)
