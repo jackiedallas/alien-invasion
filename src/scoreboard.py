@@ -10,7 +10,6 @@ class ScoreBoard:
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
         self.stats = ai_game.stats
-        self.prep_high_score()
 
         # font setting for scoring info
         self.text_color = (57, 255, 20)
@@ -18,6 +17,7 @@ class ScoreBoard:
 
         # prepare the initial score image
         self.prep_score()
+        self.prep_high_score()
 
     def prep_score(self):
         """Turn the score into a rendered image."""
@@ -35,8 +35,9 @@ class ScoreBoard:
     def prep_high_score(self):
         """Turn the high score into a rendered image."""
         high_score = round(self.stats.high_score, -1)
-        high_score_str = f"{high_score:,}"
-        self.high_score_image = self.font.render(high_score_str, True,
+        high_score_str = f"{high_score}"
+        self.high_score_image = self.font.render(high_score_str,
+                                                 True,
                                                  self.text_color,
                                                  self.settings.bg_color)
         self.high_score_rect = self.high_score_image.get_rect()
