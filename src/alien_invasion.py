@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from time import sleep
 import pygame  # type: ignore
 from settings import Settings
@@ -10,6 +11,10 @@ from game_stats import GameStats
 from button import Button
 from scoreboard import ScoreBoard
 
+current_dir = Path(__file__).resolve().parent
+laser_path = f"{current_dir}/sounds/laser.wav"
+explosion_path = f"{current_dir}/sounds/explosion.wav"
+
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior"""
@@ -19,8 +24,8 @@ class AlienInvasion:
 
         # initialize mixer for sound
         pygame.mixer.init()
-        self.laser_sound = pygame.mixer.Sound('./sounds/laser.wav')
-        self.explosion_sound = pygame.mixer.Sound('./sounds/explosion.wav')
+        self.laser_sound = pygame.mixer.Sound(laser_path)
+        self.explosion_sound = pygame.mixer.Sound(explosion_path)
 
         # initialize clock method for refresh rate
         self.clock = pygame.time.Clock()
@@ -180,8 +185,6 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-            # if bullet.rect.left >= self.screen_rect.right:
-            #     self.bullets.remove(bullet)
 
         self._check_bullet_alien_collisions()
 
@@ -193,6 +196,8 @@ class AlienInvasion:
             self.bullets, self.aliens, True, True
         )
         if collisions:
+            self.stats.score += self.settings.alien_points
+            self.sb.prep_score()
             self.explosion_sound.play()
 
         if not self.aliens:
@@ -225,10 +230,6 @@ class AlienInvasion:
             case pygame.K_p:
                 if self.game_active is False:
                     self._start_game()
-            # case pygame.K_UP:
-            #     self.ship.moving_up = True
-            # case pygame.K_DOWN:
-            #     self.ship.moving_down = True
             case pygame.K_SPACE:
                 self._fire_bullet()
             case pygame.K_q:

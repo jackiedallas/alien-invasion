@@ -3,6 +3,9 @@ class Settings:
 
     def __init__(self):
 
+        # scoring settings
+        self.alien_points = 50
+
         # Screen settings
         self.screen_width = 1200
         self.screen_height = 800
@@ -17,7 +20,7 @@ class Settings:
         self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_color = (57, 255, 20)  # lime green color
-        self.bullets_allowed = 3
+        self.bullets_allowed = 5
 
         # star settings
         self.star_color = (245, 245, 250)  # soft white

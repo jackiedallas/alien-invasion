@@ -1,4 +1,8 @@
 import pygame  # type ignore
+from pathlib import Path
+
+current_dir = Path(__file__).resolve().parent
+ship_path = f"{current_dir}/images/ship.bmp"
 
 
 class Ship:
@@ -11,7 +15,7 @@ class Ship:
         self.settings = ai_game.settings
 
         # load the ship image and get its rect
-        self.image = pygame.image.load('images/ship.bmp')
+        self.image = pygame.image.load(ship_path)
         self.rect = self.image.get_rect()
 
         # start each new ship at the bottom of the screen
