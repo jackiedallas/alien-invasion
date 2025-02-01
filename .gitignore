@@ -2,5 +2,5 @@ __pycache__/
 /venv/
 .venv/
 .vscode/
-.DS_Store
+/src/.DS_Store
 **/.DS_Store
