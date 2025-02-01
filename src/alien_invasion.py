@@ -15,6 +15,7 @@ class AlienInvasion:
 
     def __init__(self):
         pygame.init()
+        
 
         # initialize clock method for refresh rate
         self.clock = pygame.time.Clock()
