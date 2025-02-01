@@ -19,6 +19,7 @@ class AlienInvasion:
         # initialize mixer for sound
         pygame.mixer.init()
         self.laser_sound = pygame.mixer.Sound('./sounds/laser.wav')
+        self.explosion_sound = pygame.mixer.Sound('./sounds/explosion.wav')
 
         # initialize clock method for refresh rate
         self.clock = pygame.time.Clock()
@@ -189,7 +190,8 @@ class AlienInvasion:
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True
         )
-        _ = collisions
+        if collisions:
+            self.explosion_sound.play()
 
         if not self.aliens:
             # destroy existing bullets and create new fleet
