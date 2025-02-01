@@ -15,7 +15,10 @@ class AlienInvasion:
 
     def __init__(self):
         pygame.init()
-        
+
+        # initialize mixer for sound
+        pygame.mixer.init()
+        self.laser_sound = pygame.mixer.Sound('./sounds/laser.wav')
 
         # initialize clock method for refresh rate
         self.clock = pygame.time.Clock()
@@ -243,6 +246,7 @@ class AlienInvasion:
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+            self.laser_sound.play()
 
     def _update_aliens(self):
         """check if the fleet is at an edge, then update positions."""
