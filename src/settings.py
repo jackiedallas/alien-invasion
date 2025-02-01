@@ -6,6 +6,9 @@ class Settings:
         # scoring settings
         self.alien_points = 50
 
+        # how quickly the aline point value increases
+        self.score_scale = 1.5
+
         # Screen settings
         self.screen_width = 1200
         self.screen_height = 800
@@ -50,3 +53,4 @@ class Settings:
         self.ship_speed *= self.speedup_scale
         self.bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
+        self.alien_points = int(self.alien_points * self.score_scale)
