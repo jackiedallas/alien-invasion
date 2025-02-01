@@ -7,6 +7,7 @@ from bullet import Bullet
 from alien import Alien
 from star import Star
 from game_stats import GameStats
+from button import Button
 
 
 class AlienInvasion:
@@ -47,6 +48,9 @@ class AlienInvasion:
         # start alien invasion in an inactive state
         self.game_active = False
 
+        # initialize the play button
+        self.play_button = Button(self, "Play")
+
     def _check_aliens_bottom(self):
         """Check if any aliens reached the bottom of the screen."""
         for alien in self.aliens.sprites():
@@ -73,7 +77,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.game_active = False
-            sys.exit()
+            pygame.mouse.set_visible(True)
 
     def _create_star(self):
         """Create a background of stars."""
@@ -132,6 +136,29 @@ class AlienInvasion:
                     self._check_keydown_events(event)
                 case pygame.KEYUP:
                     self._check_keyup_events(event)
+                case pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self._check_play_button(mouse_pos)
+
+    def _check_play_button(self, mouse_pos):
+        """Start a new game when the player clicks Play."""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.game_active:
+
+            # reset game stats
+            self.stats.reset_stats()
+            self.game_active = True
+
+            # Get rid of any remaining bullets and aliens
+            self.bullets.empty()
+            self.aliens.empty()
+
+            # create new fleet and center
+            self._create_fleet()
+            self.ship.center_ship()
+
+            # hide the mouse cursor
+            pygame.mouse.set_visible(False)
 
     def _update_bullets(self):
         """Update the position of bullets and get rid of old bullets."""
@@ -170,6 +197,8 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+        if not self.game_active:
+            self.play_button.draw_button()
         pygame.display.flip()
 
     def _check_keydown_events(self, event):
