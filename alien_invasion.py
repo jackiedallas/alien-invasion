@@ -145,20 +145,24 @@ class AlienInvasion:
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.game_active:
 
-            # reset game stats
-            self.stats.reset_stats()
-            self.game_active = True
+            self._start_game()
 
-            # Get rid of any remaining bullets and aliens
-            self.bullets.empty()
-            self.aliens.empty()
+    def _start_game(self):
+        """start the game"""
+        # reset game stats
+        self.stats.reset_stats()
+        self.game_active = True
 
-            # create new fleet and center
-            self._create_fleet()
-            self.ship.center_ship()
+        # Get rid of any remaining bullets and aliens
+        self.bullets.empty()
+        self.aliens.empty()
 
-            # hide the mouse cursor
-            pygame.mouse.set_visible(False)
+        # create new fleet and center
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # hide the mouse cursor
+        pygame.mouse.set_visible(False)
 
     def _update_bullets(self):
         """Update the position of bullets and get rid of old bullets."""
@@ -208,6 +212,9 @@ class AlienInvasion:
                 self.ship.moving_right = True
             case pygame.K_LEFT:
                 self.ship.moving_left = True
+            case pygame.K_p:
+                if self.game_active is False:
+                    self._start_game()
             # case pygame.K_UP:
             #     self.ship.moving_up = True
             # case pygame.K_DOWN:
