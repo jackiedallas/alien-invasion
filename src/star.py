@@ -11,15 +11,20 @@ class Star(Sprite):
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
-        # RGB color (e.g., (255, 255, 255))
         self.color = self.settings.star_color
         self.radius = self.settings.star_radius  # Star size
 
-        # Random position within screen bounds
-        self.x = random.randint(0, self.settings.screen_width)
-        self.y = random.randint(0, self.settings.screen_height)
+        # Create a small transparent surface
+        self.image = pygame.Surface(
+            (self.radius * 2, self.radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(self.image, self.color,
+                           (self.radius, self.radius), self.radius)
+
+        # Set position randomly
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(0, self.settings.screen_width)
+        self.rect.y = random.randint(0, self.settings.screen_height)
 
     def draw_star(self):
-        """Draw the star as a circle to the screen."""
-        pygame.draw.circle(self.screen, self.color,
-                           (self.x, self.y), self.radius)
+        """Draw the star using its rect attribute."""
+        self.screen.blit(self.image, self.rect)

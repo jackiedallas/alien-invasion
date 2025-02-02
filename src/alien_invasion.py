@@ -220,18 +220,47 @@ class AlienInvasion:
             self.sb.prep_level()
 
     def _update_screen(self):
-        """Update images on the screen, and flip to new screen."""
+        """Update changed parts of the screen"""
+        changed_rects = []
         self.screen.fill(self.settings.bg_color)
+
+        # update stars
         for star in self.stars:
             star.draw_star()
+            changed_rects.append(star.rect)
+
+        # update bullets
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+            changed_rects.append(bullet.rect)
+
+        # update ship
         self.ship.blitme()
+        changed_rects.append(self.ship.rect)
+
+        # update aliens
         self.aliens.draw(self.screen)
+        for alien in self.aliens:
+            changed_rects.append(alien.rect)
+
+        # update score
         self.sb.show_score()
+        changed_rects.append(self.sb.score_rect)
+
+        # update play button if game is inactive
         if not self.game_active:
             self.play_button.draw_button()
-        pygame.display.flip()
+            changed_rects.append(self.play_button.rect)
+
+        # Display FPS in the corner
+        fps = self.clock.get_fps()
+        fps_text = self.sb.font.render(
+            f"FPS: {fps:.2f}", True, (255, 255, 255))
+        self.screen.blit(fps_text, (10, 10))  # Display in top-left corner
+        changed_rects.append(fps_text.get_rect(topleft=(10, 10)))
+
+        # refresh only updated areas
+        pygame.display.update(changed_rects)
 
     def _check_keydown_events(self, event):
         """Respond to keypress."""
