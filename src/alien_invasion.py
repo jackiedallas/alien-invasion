@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from time import sleep
 import pygame  # type: ignore
 from settings import Settings
@@ -8,6 +9,11 @@ from alien import Alien
 from star import Star
 from game_stats import GameStats
 from button import Button
+from scoreboard import ScoreBoard
+
+current_dir = Path(__file__).resolve().parent
+laser_path = f"{current_dir}/sounds/laser.wav"
+explosion_path = f"{current_dir}/sounds/explosion.wav"
 
 
 class AlienInvasion:
@@ -18,8 +24,8 @@ class AlienInvasion:
 
         # initialize mixer for sound
         pygame.mixer.init()
-        self.laser_sound = pygame.mixer.Sound('./sounds/laser.wav')
-        self.explosion_sound = pygame.mixer.Sound('./sounds/explosion.wav')
+        self.laser_sound = pygame.mixer.Sound(laser_path)
+        self.explosion_sound = pygame.mixer.Sound(explosion_path)
 
         # initialize clock method for refresh rate
         self.clock = pygame.time.Clock()
@@ -49,6 +55,7 @@ class AlienInvasion:
 
         # initialize game stats
         self.stats = GameStats(self)
+        self.sb = ScoreBoard(self)
 
         # start alien invasion in an inactive state
         self.game_active = False
@@ -92,9 +99,11 @@ class AlienInvasion:
 
     def _create_fleet(self):
         """Create a fleet of aliens."""
+        self.aliens.empty()
         # Create an alien and keep adding aliens until there's no room left
         # Spacing between aliens is one alien width and one alien height
         alien = Alien(self)
+
         alien_width, alien_height = alien.rect.size
         current_x, current_y = alien_width, alien_height
 
@@ -151,12 +160,16 @@ class AlienInvasion:
         if button_clicked and not self.game_active:
             self.settings.initialize_dynamic_settings()
             self._start_game()
+            self.sb.prep_score()
+            self.sb.prep_level()
 
     def _start_game(self):
         """start the game"""
         # reset game stats
         self.stats.reset_stats()
         self.game_active = True
+
+        self.settings.initialize_dynamic_settings()
 
         # Get rid of any remaining bullets and aliens
         self.bullets.empty()
@@ -165,6 +178,9 @@ class AlienInvasion:
         # create new fleet and center
         self._create_fleet()
         self.ship.center_ship()
+
+        self.sb.prep_score()
+        self.sb.prep_level()
 
         # hide the mouse cursor
         pygame.mouse.set_visible(False)
@@ -178,8 +194,6 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-            # if bullet.rect.left >= self.screen_rect.right:
-            #     self.bullets.remove(bullet)
 
         self._check_bullet_alien_collisions()
 
@@ -191,6 +205,10 @@ class AlienInvasion:
             self.bullets, self.aliens, True, True
         )
         if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+            self.sb.prep_score()
+            self.sb.check_high_score()
             self.explosion_sound.play()
 
         if not self.aliens:
@@ -198,6 +216,8 @@ class AlienInvasion:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+            self.stats.level += 1
+            self.sb.prep_level()
 
     def _update_screen(self):
         """Update images on the screen, and flip to new screen."""
@@ -208,6 +228,7 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+        self.sb.show_score()
         if not self.game_active:
             self.play_button.draw_button()
         pygame.display.flip()
@@ -222,10 +243,6 @@ class AlienInvasion:
             case pygame.K_p:
                 if self.game_active is False:
                     self._start_game()
-            # case pygame.K_UP:
-            #     self.ship.moving_up = True
-            # case pygame.K_DOWN:
-            #     self.ship.moving_down = True
             case pygame.K_SPACE:
                 self._fire_bullet()
             case pygame.K_q:
