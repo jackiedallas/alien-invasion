@@ -4,3 +4,4 @@ __pycache__/
 .vscode/
 /src/.DS_Store
 **/.DS_Store
+profile_results.txt
