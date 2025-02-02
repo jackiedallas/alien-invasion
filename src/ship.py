@@ -44,7 +44,8 @@ class Ship:
         # setting the ship speed based on the settings file
         # update ship position based on speed settings
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT] and self.rect.right < self.screen.get_rect().right:
+        if keys[pygame.K_RIGHT] and self.rect.right < \
+                self.screen.get_rect().right:
             self.x += self.settings.ship_speed
         if keys[pygame.K_LEFT] and self.rect.left > 0:
             self.x -= self.settings.ship_speed

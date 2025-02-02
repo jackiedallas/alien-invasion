@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 from time import sleep
 import pygame  # type: ignore
+# from check_sensors import get_cpu_temp
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
@@ -10,6 +11,9 @@ from star import Star
 from game_stats import GameStats
 from button import Button
 from scoreboard import ScoreBoard
+import psutil
+# import platform
+# import subprocess
 
 current_dir = Path(__file__).resolve().parent
 laser_path = f"{current_dir}/sounds/laser.wav"
@@ -29,6 +33,11 @@ class AlienInvasion:
 
         # initialize clock method for refresh rate
         self.clock = pygame.time.Clock()
+
+        # for performance monitoring
+        self.cpu_usage_history = []
+        self.cpu_update_interval = 30
+        self.frame_count = 0
 
         # initialize settings from settings.py
         self.settings = Settings()
@@ -199,12 +208,25 @@ class AlienInvasion:
         self._check_bullet_alien_collisions()
 
     def _check_bullet_alien_collisions(self):
-        """Respond to bullet-alien collisions."""
+        """Respond to bullet-alien collisions. (optimized)"""
         # check for any bullets that have hit aliens.
         # if so, get rid of the bullet and the alien
+        if not self.aliens:  # Skip collision checks if no aliens exist
+            return
+
+        # Get the lowest alien position to optimize bullet checks
+        min_alien_top = min(alien.rect.top for alien in self.aliens)
+
+        # Broad phase: Only check bullets that are near aliens
+        bullets_to_check = [
+            bullet for bullet in self.bullets
+            if bullet.rect.bottom > min_alien_top
+        ]
+
+        # Perform collision check only on nearby bullets
         collisions = pygame.sprite.groupcollide(
-            self.bullets, self.aliens, True, True
-        )
+            pygame.sprite.Group(bullets_to_check), self.aliens, True, True)
+
         if collisions:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
@@ -213,7 +235,7 @@ class AlienInvasion:
             self.explosion_sound.play()
 
         if not self.aliens:
-            # destroy existing bullets and create new fleet
+            # Destroy bullets and create a new fleet
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
@@ -253,12 +275,37 @@ class AlienInvasion:
             self.play_button.draw_button()
             changed_rects.append(self.play_button.rect)
 
-        # Display FPS in the corner
+        # get fps
         fps = self.clock.get_fps()
-        fps_text = self.sb.font.render(
+
+        # get cpu temp
+        # cpu_temp = get_cpu_temp()
+
+        # update cpu usage every X frames
+        self.frame_count += 1
+        if self.frame_count % self.cpu_update_interval == 0:
+            self.cpu_usage_history.append(psutil.cpu_percent(interval=0))
+            if len(self.cpu_usage_history) > 10:
+                self.cpu_usage_history.pop(0)
+
+        # average cpu usage
+        average_cpu_usage = sum(self.cpu_usage_history) / \
+            len(self.cpu_usage_history) if self.cpu_usage_history else 0
+
+        # render fps and cpu usage text
+        font = pygame.font.Font(None, 30)
+        fps_text = font.render(
             f"FPS: {fps:.2f}", True, (255, 255, 255))
+        cpu_text = font.render(
+            f"CPU: {average_cpu_usage:.2f}%", True, (255, 255, 255))
+        # temp_text = font.render(
+        #     f"CPU Temp: {cpu_temp}", True, (255, 255, 255))
         self.screen.blit(fps_text, (10, 10))  # Display in top-left corner
+        self.screen.blit(cpu_text, (10, 40))
+        # self.screen.blit(temp_text, (10, 70))
         changed_rects.append(fps_text.get_rect(topleft=(10, 10)))
+        changed_rects.append(cpu_text.get_rect(topleft=(10, 40)))
+        # changed_rects.append(temp_text.get_rect(topleft=(10, 70)))
 
         # refresh only updated areas
         pygame.display.update(changed_rects)
