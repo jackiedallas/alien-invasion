@@ -43,10 +43,15 @@ class Ship:
         # update ship's x value to not go off screen
         # setting the ship speed based on the settings file
         # update ship position based on speed settings
-        if self.moving_right and self.rect.right < self.screen_rect.right:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RIGHT] and self.rect.right < self.screen.get_rect().right:
             self.x += self.settings.ship_speed
-        if self.moving_left and self.rect.left > 0:
+        if keys[pygame.K_LEFT] and self.rect.left > 0:
             self.x -= self.settings.ship_speed
+        # if self.moving_right and self.rect.right < self.screen_rect.right:
+        #     self.x += self.settings.ship_speed
+        # if self.moving_left and self.rect.left > 0:
+        #     self.x -= self.settings.ship_speed
         # if self.moving_up and self.rect.top > self.screen_rect.top:
         #     self.y -= self.settings.ship_speed
         # if self.moving_down and self.rect.bottom < self.screen_rect.bottom:

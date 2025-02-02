@@ -265,10 +265,10 @@ class AlienInvasion:
 
     def _check_keydown_events(self, event, keys):
         """Respond to keypress. (optimized)"""
-        if keys[pygame.K_RIGHT]:
-            self.ship.moving_right = True
-        if keys[pygame.K_LEFT]:
-            self.ship.moving_left = True
+        # if keys[pygame.K_RIGHT]:
+        #     self.ship.moving_right = True
+        # if keys[pygame.K_LEFT]:
+        #     self.ship.moving_left = True
         if event.key == pygame.K_p and not self.game_active:
             self._start_game()
         if event.key == pygame.K_SPACE:
