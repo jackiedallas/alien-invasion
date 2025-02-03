@@ -24,6 +24,9 @@ class Settings:
         self.bullet_color = (57, 255, 20)  # lime green color
         self.bullets_allowed = 100
 
+        # alien bullet settings
+        self.alien_bullet_color = (255, 30, 30)  # red color
+
         # star settings
         self.star_color = (245, 245, 250)  # soft white
         self.star_radius = 1
