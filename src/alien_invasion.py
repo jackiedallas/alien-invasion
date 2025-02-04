@@ -1,4 +1,4 @@
-import sys
+# import sys
 from pathlib import Path
 from time import sleep
 import pygame  # type: ignore
@@ -11,7 +11,7 @@ from star import Star
 from game_stats import GameStats
 from button import Button
 from scoreboard import ScoreBoard
-import psutil
+# import psutil
 # import platform
 # import subprocess
 
@@ -34,10 +34,10 @@ class AlienInvasion:
         # initialize clock method for refresh rate
         self.clock = pygame.time.Clock()
 
-        # for performance monitoring
-        self.cpu_usage_history = []
-        self.cpu_update_interval = 30
-        self.frame_count = 0
+        # # for performance monitoring
+        # self.cpu_usage_history = []
+        # self.cpu_update_interval = 30
+        # self.frame_count = 0
 
         # initialize settings from settings.py
         self.settings = Settings()
@@ -275,37 +275,37 @@ class AlienInvasion:
             self.play_button.draw_button()
             changed_rects.append(self.play_button.rect)
 
-        # get fps
-        fps = self.clock.get_fps()
+        # # get fps
+        # fps = self.clock.get_fps()
 
-        # get cpu temp
-        # cpu_temp = get_cpu_temp()
+        # # get cpu temp
+        # # cpu_temp = get_cpu_temp()
 
-        # update cpu usage every X frames
-        self.frame_count += 1
-        if self.frame_count % self.cpu_update_interval == 0:
-            self.cpu_usage_history.append(psutil.cpu_percent(interval=0))
-            if len(self.cpu_usage_history) > 10:
-                self.cpu_usage_history.pop(0)
+        # # update cpu usage every X frames
+        # self.frame_count += 1
+        # if self.frame_count % self.cpu_update_interval == 0:
+        #     self.cpu_usage_history.append(psutil.cpu_percent(interval=0))
+        #     if len(self.cpu_usage_history) > 10:
+        #         self.cpu_usage_history.pop(0)
 
-        # average cpu usage
-        average_cpu_usage = sum(self.cpu_usage_history) / \
-            len(self.cpu_usage_history) if self.cpu_usage_history else 0
+        # # average cpu usage
+        # average_cpu_usage = sum(self.cpu_usage_history) / \
+        #     len(self.cpu_usage_history) if self.cpu_usage_history else 0
 
-        # render fps and cpu usage text
-        font = pygame.font.Font(None, 30)
-        fps_text = font.render(
-            f"FPS: {fps:.2f}", True, (255, 255, 255))
-        cpu_text = font.render(
-            f"CPU: {average_cpu_usage:.2f}%", True, (255, 255, 255))
-        # temp_text = font.render(
-        #     f"CPU Temp: {cpu_temp}", True, (255, 255, 255))
-        self.screen.blit(fps_text, (10, 10))  # Display in top-left corner
-        self.screen.blit(cpu_text, (10, 40))
-        # self.screen.blit(temp_text, (10, 70))
-        changed_rects.append(fps_text.get_rect(topleft=(10, 10)))
-        changed_rects.append(cpu_text.get_rect(topleft=(10, 40)))
-        # changed_rects.append(temp_text.get_rect(topleft=(10, 70)))
+        # # render fps and cpu usage text
+        # font = pygame.font.Font(None, 30)
+        # fps_text = font.render(
+        #     f"FPS: {fps:.2f}", True, (255, 255, 255))
+        # cpu_text = font.render(
+        #     f"CPU: {average_cpu_usage:.2f}%", True, (255, 255, 255))
+        # # temp_text = font.render(
+        # #     f"CPU Temp: {cpu_temp}", True, (255, 255, 255))
+        # self.screen.blit(fps_text, (10, 10))  # Display in top-left corner
+        # self.screen.blit(cpu_text, (10, 40))
+        # # self.screen.blit(temp_text, (10, 70))
+        # changed_rects.append(fps_text.get_rect(topleft=(10, 10)))
+        # changed_rects.append(cpu_text.get_rect(topleft=(10, 40)))
+        # # changed_rects.append(temp_text.get_rect(topleft=(10, 70)))
 
         # refresh only updated areas
         pygame.display.update(changed_rects)
